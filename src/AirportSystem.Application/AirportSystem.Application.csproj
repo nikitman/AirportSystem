@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AirportSystem.Domain\AirportSystem.Domain.csproj" />
+    <ProjectReference Include="..\AirportSystem.Persistence\AirportSystem.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
