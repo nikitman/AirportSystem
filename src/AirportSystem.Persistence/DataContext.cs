@@ -1,4 +1,6 @@
-﻿using AirportSystem.Domain.Entities;
+﻿using System;
+
+using AirportSystem.Domain.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,12 @@ namespace AirportSystem.Persistence
         public DbSet<City> Cities { get; set; }
 
         public DbSet<Country> Countries { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.LogTo(Console.WriteLine);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
