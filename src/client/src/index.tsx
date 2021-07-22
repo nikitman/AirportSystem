@@ -4,11 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CssBaseline } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
+import { store, StoreContext } from './stores/store';
 
 ReactDOM.render(
     <React.StrictMode>
         <CssBaseline />
-        <App />
+        <StoreContext.Provider value={store}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </StoreContext.Provider>
     </React.StrictMode>,
     document.getElementById('root')
 );

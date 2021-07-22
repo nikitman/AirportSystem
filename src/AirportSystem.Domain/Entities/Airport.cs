@@ -14,8 +14,6 @@ namespace AirportSystem.Domain.Entities
 
         public decimal Longitude { get; set; }
 
-        public string FormattedCoordinates => $"{Latitude},{Longitude}";
-
         public City City { get; set; }
 
         public ICollection<Flight> InboundFlights { get; set; } = new List<Flight>();

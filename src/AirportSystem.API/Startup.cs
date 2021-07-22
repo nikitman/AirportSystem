@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
+using Okta.AspNetCore;
+
 namespace AirportSystem.API
 {
     public class Startup
@@ -32,7 +34,30 @@ namespace AirportSystem.API
                 options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCors(options =>
+            {
+                // The CORS policy is open for testing purposes. In a production application, you should restrict it to known origins.
+                options.AddPolicy(
+                    "AllowAll",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader());
+            });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = OktaDefaults.ApiAuthenticationScheme;
+                options.DefaultChallengeScheme = OktaDefaults.ApiAuthenticationScheme;
+                options.DefaultSignInScheme = OktaDefaults.ApiAuthenticationScheme;
+            })
+            .AddOktaWebApi(new OktaWebApiOptions()
+            {
+                OktaDomain = config["Okta:OktaDomain"],
+            });
+
+            services.AddAuthorization();
+
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AirportSystem.API", Version = "v1" });
@@ -51,7 +76,11 @@ namespace AirportSystem.API
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAll");
+
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

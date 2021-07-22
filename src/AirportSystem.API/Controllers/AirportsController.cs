@@ -5,6 +5,7 @@ using AirportSystem.Application.Airports;
 
 using MediatR;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirportSystem.API.Controllers
@@ -20,6 +21,7 @@ namespace AirportSystem.API.Controllers
             this.mediator = mediator;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<AirportDto>>> GetAirports()
         {
