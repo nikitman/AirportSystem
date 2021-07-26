@@ -5,9 +5,6 @@ const config = {
         redirectUri: `${window.location.origin}/login/callback`,
         scopes: ["openid", "profile", "email"],
         pkce: true
-    },
-    resourceServer: {
-        airportsUrl: "https://localhost:5001/api/airports"
     }
 };
 

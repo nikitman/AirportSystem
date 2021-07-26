@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using AirportSystem.Application.Airports;
+using AirportSystem.Application.Core;
 
 using MediatR;
 
@@ -23,9 +24,9 @@ namespace AirportSystem.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<AirportDto>>> GetAirports()
+        public async Task<ActionResult<PagedList<AirportDto>>> GetAirports([FromQuery] PagingParams paging, [FromQuery] SortingParams sorting)
         {
-            var airports = await mediator.Send(new List.Query());
+            var airports = await mediator.Send(new List.Query { Paging = paging, Sorting = sorting });        
             return airports;
         }
     }

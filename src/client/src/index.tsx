@@ -3,18 +3,21 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
 import { store, StoreContext } from './stores/store';
+import theme from './shared/theme';
 
 ReactDOM.render(
     <React.StrictMode>
-        <CssBaseline />
-        <StoreContext.Provider value={store}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </StoreContext.Provider>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <StoreContext.Provider value={store}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </StoreContext.Provider>
+        </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

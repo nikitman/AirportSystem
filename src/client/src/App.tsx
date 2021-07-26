@@ -2,10 +2,14 @@ import { Box, Container } from "@material-ui/core";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
 import { LoginCallback, SecureRoute, Security } from "@okta/okta-react";
 import { Route, Switch, useHistory } from "react-router-dom";
-import Airports from "./Airports";
+import Airports from "./features/airports/Airports";
 import Home from "./Home";
 import NavBar from "./NavBar";
 import oktaConfig from "./oktaConfig";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faChevronLeft, faChevronUp, faChevronRight, faChevronDown);
 
 const oktaAuth = new OktaAuth(oktaConfig.oidc);
 

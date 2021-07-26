@@ -1,31 +1,35 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
+import agent from "../api/agent";
 import Airport from "../models/Airport";
-import oktaConfig from "../oktaConfig";
 
 export default class AirportsStore {
     airports: Airport[] = [];
+
+    page = 1;
+    pageSize = 10;
+    totalPages = 0;
+    totalCount = 0;
+
+    sortBy = "id";
+    descending = false;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setAirports = (airports: Airport[]) => {
-        this.airports = airports;
-    }
-
-    loadAirports = async (accessToken: any) => {
+    loadAirports = async (page = 1, pageSize = 10, sortBy = "id", descending = false) => {
         try {
-            const response = await fetch(oktaConfig.resourceServer.airportsUrl, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
+            const payload = await agent.Airports.list(page, pageSize, sortBy, descending);
+
+            runInAction(() => {
+                this.airports = payload.items;
+                this.page = page;
+                this.pageSize = pageSize;
+                this.totalCount = payload.totalCount;
+                this.totalPages = payload.totalPages;
+                this.sortBy = sortBy;
+                this.descending = descending;
             });
-
-            if (!response.ok) {
-                console.log(response);
-            }
-
-            this.setAirports(await response.json());
         } catch (err) {
             console.log(err);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AirportSystem.Domain.Entities;
@@ -11,6 +12,9 @@ namespace AirportSystem.Persistence
 {
     public class Seed
     {
+        private static readonly Random random = new Random();
+        private static readonly string alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM";
+
         public static async Task SeedData(DataContext context)
         {
             if (await context.Countries.AnyAsync())
@@ -50,6 +54,14 @@ namespace AirportSystem.Persistence
                 new Airport { Name = "Международный аэропорт «Харьков»", CityId = cities[1].Id },
                 new Airport { Name = "Leonardo da Vinci International Airport", CityId = cities[4].Id },
             };
+
+            Enumerable.Range(0, 1000).ToList().ForEach(n => airports.Add(new Airport
+            {
+                Name = new string(alphabet.OrderBy(c => random.Next(0, 26)).ToArray()),
+                CityId = cities[random.Next(0, 5)].Id,
+                Latitude = random.NextDouble() * 1_000_000,
+                Longitude = random.NextDouble() * 1_000_000,
+            }));
 
             context.Airports.AddRange(airports);
             await context.SaveChangesAsync();
