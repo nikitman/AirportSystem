@@ -1,3 +1,5 @@
+import { OktaAuth } from "@okta/okta-auth-js";
+
 const config = {
     oidc: {
         clientId: "0oa1aqt0i9yV7sN3V5d7",
@@ -8,4 +10,4 @@ const config = {
     }
 };
 
-export default config;
+export const oktaAuth = new OktaAuth(config.oidc);

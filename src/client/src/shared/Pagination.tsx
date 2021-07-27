@@ -1,13 +1,17 @@
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Grid, TextField, withStyles } from "@material-ui/core";
-import { observer } from "mobx-react-lite";
-import { useState } from "react";
 
-interface Props {
+interface PaginationProps {
     page: number;
     pageSize: number;
     totalPages: number;
     onChange: (page: number, pageSize: number) => void;
+}
+
+interface PaginationState {
+    page: string;
+    pageSize: string;
 }
 
 const StyledButton = withStyles(theme => ({
@@ -34,96 +38,103 @@ const StyledTextField = withStyles(theme => ({
     }
 }))(TextField);
 
-export default observer(function Pagination(props: Props) {
-    const [page, setPage] = useState(props.page);
-    const [pageSize, setPageSize] = useState(props.pageSize);
+export class Pagination extends React.Component<PaginationProps, PaginationState> {
+    constructor(props: PaginationProps) {
+        super(props);
 
-    const [pageInput, setPageInput] = useState(props.page.toString());
-    const [pageSizeInput, setPageSizeInput] = useState(props.pageSize.toString());
+        this.state = {
+            page: props.page.toString(),
+            pageSize: props.pageSize.toString()
+        };
+    }
 
-    const handlePageChange = (action: "back" | "forward" | "input") => {
-        let nextPage = page;
+    componentWillReceiveProps(nextProps: PaginationProps) {
+        this.setState({ page: nextProps.page.toString() });
+    }
+
+    render() {
+        return (
+            <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                    <Grid container spacing={1} alignItems="center">
+                        <Grid item>
+                            <StyledButton onClick={() => this.handlePageChange("back")}>
+                                <FontAwesomeIcon icon="chevron-left" />
+                            </StyledButton>
+                        </Grid>
+                        <Grid item>
+                            <StyledTextField value={this.state.page}
+                                onChange={(e) => this.setState({ page: e.target.value })}
+                                onBlur={() => this.handlePageChange("input")}
+                                variant="outlined" />
+                        </Grid>
+                        <Grid item>
+                            <StyledButton onClick={(e) => this.handlePageChange("forward")}>
+                                <FontAwesomeIcon icon="chevron-right" />
+                            </StyledButton>
+                        </Grid>
+                        <Grid item>
+                            of {this.props.totalPages} {this.props.totalPages === 1 ? "page" : "pages"}
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item>
+                    <Grid container spacing={1} alignItems="center">
+                        <Grid item>
+                            Showing
+                        </Grid>
+                        <Grid item>
+                            <StyledTextField value={this.state.pageSize}
+                                onChange={(e) => this.setState({ pageSize: e.target.value })}
+                                onBlur={this.handlePageSizeChange}
+                                variant="outlined" />
+                        </Grid>
+                        <Grid item>
+                            {this.state.pageSize === "1" ? "item" : "items"} per page
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        );
+    }
+
+    handlePageChange = (action: "back" | "forward" | "input") => {
+        let nextPage = this.props.page;
 
         switch (action) {
             case "back":
-                nextPage = Math.max(1, page - 1);
+                nextPage = Math.max(1, this.props.page - 1);
                 break;
             case "forward":
-                nextPage = Math.min(props.totalPages, page + 1);
+                nextPage = Math.min(this.props.totalPages, this.props.page + 1);
                 break;
             case "input":
-                const parsedInput = parseInt(pageInput);
+                const parsedInput = parseInt(this.state.page);
 
-                if (!isNaN(parsedInput) && parsedInput >= 1 && parsedInput <= props.totalPages) {
+                if (!isNaN(parsedInput) && parsedInput >= 1 && parsedInput <= this.props.totalPages) {
                     nextPage = parsedInput;
                 }
         }
 
-        if (nextPage !== page) {
-            setPage(nextPage);
-            props.onChange(nextPage, pageSize);
+        if (nextPage !== this.props.page) {
+            this.props.onChange(nextPage, this.props.pageSize);
         }
 
-        setPageInput(nextPage.toString());
+        this.setState({ page: nextPage.toString() });
     }
 
-    const handlePageSizeChange = () => {
-        let nextPageSize = pageSize;
-        const parsedPageSize = parseInt(pageSizeInput);
+    handlePageSizeChange = () => {
+        let nextPageSize = this.props.pageSize;
+        const parsedPageSize = parseInt(this.state.pageSize);
 
         if (!isNaN(parsedPageSize) && parsedPageSize >= 1) {
             nextPageSize = parsedPageSize;
         }
 
-        if (nextPageSize !== pageSize) {
-            setPageSize(nextPageSize);
-            props.onChange(page, nextPageSize);
+        if (nextPageSize !== this.props.pageSize) {
+            this.props.onChange(this.props.page, nextPageSize);
         }
 
-        setPageSizeInput(nextPageSize.toString());
+        this.setState({ pageSize: nextPageSize.toString() });
     }
-
-    return (
-        <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-                <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                        <StyledButton onClick={() => handlePageChange("back")}>
-                            <FontAwesomeIcon icon="chevron-left" />
-                        </StyledButton>
-                    </Grid>
-                    <Grid item>
-                        <StyledTextField value={pageInput}
-                            onChange={(e) => setPageInput(e.target.value)}
-                            onBlur={() => handlePageChange("input")}
-                            variant="outlined" />
-                    </Grid>
-                    <Grid item>
-                        <StyledButton onClick={(e) => handlePageChange("forward")}>
-                            <FontAwesomeIcon icon="chevron-right" />
-                        </StyledButton>
-                    </Grid>
-                    <Grid item>
-                        of {props.totalPages} {props.totalPages === 1 ? "page" : "pages"}
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item>
-                <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                        Showing
-                    </Grid>
-                    <Grid item>
-                        <StyledTextField value={pageSizeInput}
-                            onChange={(e) => setPageSizeInput(e.target.value)}
-                            onBlur={handlePageSizeChange}
-                            variant="outlined" />
-                    </Grid>
-                    <Grid item>
-                        {pageSizeInput === "1" ? "item" : "items"} per page
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid>
-    );
-});
+}

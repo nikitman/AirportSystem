@@ -1,9 +1,12 @@
+import React from "react";
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Chip, withStyles, Box, Typography } from "@material-ui/core";
-import Airport from "../../models/Airport";
-import SortingTableCell from "../../shared/SortingTableCell";
+import { Airport } from "../../models/Airport";
+import { SortingTableCell } from "../../shared/SortingTableCell";
 
-interface Props {
+interface AirportsTableProps {
     airports: Airport[];
+    currentSortBy: string;
+    currentDescending: boolean;
     onSort: (sortBy: string, descending: boolean) => void;
 }
 
@@ -25,52 +28,57 @@ const StyledChip = withStyles((theme) => ({
     }
 }))(Chip);
 
-export default function AirportsTable({ airports, onSort }: Props) {
-    return (
-        <TableContainer>
-            <Table>
-                <TableHead>
-                    <StyledTableRow>
-                        <SortingTableCell onSort={onSort} sortBy="id" align="left">Identifier</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="city" align="left">City</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="country" align="right">Country</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="latitude" align="right">Latitude</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="longitude" align="right">Longitude</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="inboundFlights">Inbound Flights</SortingTableCell>
-                        <SortingTableCell onSort={onSort} sortBy="outboundFlights">Outbound Flights</SortingTableCell>
-                    </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                    {airports.map((airport) => (
-                        <StyledTableRow key={airport.id}>
-                            <TableCell>
-                                <span style={{ textDecoration: "underline", display: "block" }}>
-                                    #{airport.id}
-                                </span>
-                                <Typography variant="caption">
-                                    {airport.name}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <StyledChip label={airport.city} />
-                            </TableCell>
-                            <TableCell align="right">{airport.country}</TableCell>
-                            <TableCell align="right">
-                                <Box fontWeight="bold">
-                                    {airport.latitude}
-                                </Box>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Box fontWeight="bold">
-                                    {airport.longitude}
-                                </Box>
-                            </TableCell>
-                            <TableCell>{airport.inboundFlightsCount}</TableCell>
-                            <TableCell>{airport.outboundFlightsCount}</TableCell>
+export class AirportsTable extends React.Component<AirportsTableProps> {
+    render() {
+        const onSort = this.props.onSort;
+        const current = { sortBy: this.props.currentSortBy, descending: this.props.currentDescending };
+
+        return (
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <StyledTableRow>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="id" align="left">Identifier</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="city" align="left">City</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="country" align="right">Country</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="latitude" align="right">Latitude</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="longitude" align="right">Longitude</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="inboundFlights">Inbound Flights</SortingTableCell>
+                            <SortingTableCell current={current} onSort={onSort} sortBy="outboundFlights">Outbound Flights</SortingTableCell>
                         </StyledTableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    )
+                    </TableHead>
+                    <TableBody>
+                        {this.props.airports.map(airport => (
+                            <StyledTableRow key={airport.id}>
+                                <TableCell>
+                                    <span style={{ textDecoration: "underline", display: "block" }}>
+                                        #{airport.id}
+                                    </span>
+                                    <Typography variant="caption">
+                                        {airport.name}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <StyledChip label={airport.city} />
+                                </TableCell>
+                                <TableCell align="right">{airport.country}</TableCell>
+                                <TableCell align="right">
+                                    <Box fontWeight="bold">
+                                        {airport.latitude}
+                                    </Box>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Box fontWeight="bold">
+                                        {airport.longitude}
+                                    </Box>
+                                </TableCell>
+                                <TableCell>{airport.inboundFlightsCount}</TableCell>
+                                <TableCell>{airport.outboundFlightsCount}</TableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
 }

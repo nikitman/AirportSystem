@@ -1,22 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import { BrowserRouter } from 'react-router-dom';
-import { store, StoreContext } from './stores/store';
-import theme from './shared/theme';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { App } from './App';
+import { theme } from './shared/theme';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faChevronLeft, faChevronUp, faChevronRight, faChevronDown);
+
+export const history = createBrowserHistory();
 
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <StoreContext.Provider value={store}>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </StoreContext.Provider>
+            <Router history={history}>
+                <App />
+            </Router>
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')

@@ -1,10 +1,8 @@
-import { OktaAuth } from "@okta/okta-auth-js";
-import oktaConfig from "../oktaConfig";
-
-const oktaAuth = new OktaAuth(oktaConfig.oidc);
+import { ListQueryParams } from "../models/ListQueryParams";
+import { oktaAuth } from "../oktaAuth";
 
 const Airports = {
-    list: async (page: number, pageSize: number, sortBy: string, descending: boolean) => {
+    list: async ({ page, pageSize, sortBy, descending }: ListQueryParams) => {
         const url =
             `https://localhost:5001/api/airports?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&descending=${descending}`;
 
@@ -22,8 +20,6 @@ const Airports = {
     }
 }
 
-const agent = {
+export const agent = {
     Airports
 };
-
-export default agent;

@@ -1,38 +1,33 @@
+import React from "react";
 import { Box, Container } from "@material-ui/core";
-import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
+import { toRelativeUrl } from "@okta/okta-auth-js";
 import { LoginCallback, SecureRoute, Security } from "@okta/okta-react";
-import { Route, Switch, useHistory } from "react-router-dom";
-import Airports from "./features/airports/Airports";
-import Home from "./Home";
-import NavBar from "./NavBar";
-import oktaConfig from "./oktaConfig";
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { Route, Switch } from "react-router-dom";
+import { Airports } from "./features/airports/Airports";
+import { Header } from "./Header";
+import { history } from ".";
+import { oktaAuth } from "./oktaAuth";
+import { Home } from "./Home";
 
-library.add(faChevronLeft, faChevronUp, faChevronRight, faChevronDown);
-
-const oktaAuth = new OktaAuth(oktaConfig.oidc);
-
-export default function App() {
-    const history = useHistory();
-
-    const restoreOriginalUri = async (_oktaAuth: any, originalUri: string) => {
+export class App extends React.Component {
+    restoreOriginalUri = (_oktaAuth: any, originalUri: string) => {
         history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
     }
 
-    return (
-        <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
-            <NavBar />
-
-            <Container maxWidth="lg">
-                <Box py={2}>
-                    <Switch>
-                        <Route path="/" exact component={Home} />
-                        <Route path="/login/callback" component={LoginCallback} />
-                        <SecureRoute path="/airports" component={Airports} />
-                    </Switch>
-                </Box>
-            </Container>
-        </Security>
-    );
-}
+    render() {
+        return (
+            <Security oktaAuth={oktaAuth} restoreOriginalUri={this.restoreOriginalUri}>
+                <Header />
+                <Container maxWidth="lg">
+                    <Box py={2}>
+                        <Switch>
+                            <Route path="/" exact component={Home} />
+                            <Route path="/login/callback" component={LoginCallback} />
+                            <SecureRoute path="/airports" component={Airports} />
+                        </Switch>
+                    </Box>
+                </Container>
+            </Security>
+        );
+    }
+};

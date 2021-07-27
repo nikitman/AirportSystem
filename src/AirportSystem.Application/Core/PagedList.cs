@@ -12,7 +12,7 @@ namespace AirportSystem.Application.Core
         public PagedList(IEnumerable<T> items, int count, int page, int pageSize)
         {
             Page = page;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            TotalPages = CalculateTotalPages(count, pageSize);
             PageSize = pageSize;
             TotalCount = count;
             Items = new List<T>(items);
@@ -31,6 +31,12 @@ namespace AirportSystem.Application.Core
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int page, int pageSize)
         {
             var count = await source.CountAsync();
+            int totalPages = CalculateTotalPages(count, pageSize);
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
 
             var items = await source
                 .Skip((page - 1) * pageSize)
@@ -38,6 +44,11 @@ namespace AirportSystem.Application.Core
                 .ToListAsync();
 
             return new PagedList<T>(items, count, page, pageSize);
+        }
+
+        private static int CalculateTotalPages(int count, int pageSize)
+        {
+            return (int)Math.Ceiling(count / (double)pageSize);
         }
     }
 }
