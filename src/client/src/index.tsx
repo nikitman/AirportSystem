@@ -8,9 +8,9 @@ import { createBrowserHistory } from 'history';
 import { App } from './App';
 import { theme } from './shared/theme';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown, faGlobe } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faChevronLeft, faChevronUp, faChevronRight, faChevronDown);
+library.add(faChevronLeft, faChevronUp, faChevronRight, faChevronDown, faGlobe);
 
 export const history = createBrowserHistory();
 

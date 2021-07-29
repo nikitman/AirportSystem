@@ -1,7 +1,8 @@
 import React from "react";
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Chip, withStyles, Box, Typography } from "@material-ui/core";
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Chip, withStyles, Box, Typography, Link } from "@material-ui/core";
 import { Airport } from "../../models/Airport";
 import { SortingTableCell } from "../../shared/SortingTableCell";
+import { Link as RouterLink } from "react-router-dom";
 
 interface AirportsTableProps {
     airports: Airport[];
@@ -51,9 +52,15 @@ export class AirportsTable extends React.Component<AirportsTableProps> {
                         {this.props.airports.map(airport => (
                             <StyledTableRow key={airport.id}>
                                 <TableCell>
-                                    <span style={{ textDecoration: "underline", display: "block" }}>
+                                    <Link
+                                        component={RouterLink}
+                                        to={`/airports/${airport.id}`}
+                                        color="textPrimary"
+                                        underline="always"
+                                    >
                                         #{airport.id}
-                                    </span>
+                                    </Link>
+                                    <br />
                                     <Typography variant="caption">
                                         {airport.name}
                                     </Typography>

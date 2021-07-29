@@ -8,6 +8,7 @@ import { Header } from "./Header";
 import { history } from ".";
 import { oktaAuth } from "./oktaAuth";
 import { Home } from "./Home";
+import { AirportDetails } from "./features/airports/AirportDetails";
 
 export class App extends React.Component {
     restoreOriginalUri = (_oktaAuth: any, originalUri: string) => {
@@ -23,6 +24,7 @@ export class App extends React.Component {
                         <Switch>
                             <Route path="/" exact component={Home} />
                             <Route path="/login/callback" component={LoginCallback} />
+                            <SecureRoute path="/airports/:id" component={AirportDetails} />
                             <SecureRoute path="/airports" component={Airports} />
                         </Switch>
                     </Box>

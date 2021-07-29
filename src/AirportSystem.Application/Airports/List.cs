@@ -77,8 +77,8 @@ namespace AirportSystem.Application.Airports
                         Country = x.City.Country.Name,
                         Latitude = x.Latitude,
                         Longitude = x.Longitude,
-                        InboundFlightsCount = x.InboundFlights.Where(y => y.Status == FlightStatus.NotStarted || y.Status == FlightStatus.InProcess).Count(),
-                        OutboundFlightsCount = x.OutboundFlights.Where(y => y.Status == FlightStatus.NotStarted || y.Status == FlightStatus.InProcess).Count(),
+                        InboundFlightsCount = x.InboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
+                        OutboundFlightsCount = x.OutboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
                     });
 
                 var sortByExpression = request.GetSortByExpression(request.Sorting.SortBy);

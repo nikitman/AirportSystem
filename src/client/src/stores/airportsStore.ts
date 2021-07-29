@@ -8,6 +8,9 @@ class AirportsStore {
     airports: Airport[] | null = null;
 
     @observable
+    selectedAirport: Airport | null = null;
+
+    @observable
     queryParams: ListQueryParams = {
         page: 1,
         pageSize: 5,
@@ -43,6 +46,20 @@ class AirportsStore {
     }
 
     @action
+    setSelectedAirport = async (id: number) => {
+        let selectedAirport = this.airports?.find(x => x.id === id);
+
+        this.selectedAirport = selectedAirport
+            ? selectedAirport
+            : await this.loadAirport(id);
+    }
+
+    @action
+    clearSelectedAirport = () => {
+        this.selectedAirport = null;
+    }
+
+    @action
     loadAirports = async () => {
         this.setLoading(true);
 
@@ -57,6 +74,19 @@ class AirportsStore {
                     this.queryParams.page = payload.totalPages;
                 }
             });
+        } catch (err) {
+            console.log(err);
+        } finally {
+            this.setLoading(false);
+        }
+    }
+
+    @action
+    loadAirport = async (id: number) => {
+        this.setLoading(true);
+
+        try {
+            return await agent.Airports.details(id);
         } catch (err) {
             console.log(err);
         } finally {

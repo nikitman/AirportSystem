@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using AirportSystem.Application.Airports;
 using AirportSystem.Persistence;
 
@@ -56,7 +58,13 @@ namespace AirportSystem.API
 
             services.AddAuthorization();
 
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    var enumConverter = new JsonStringEnumConverter();
+                    opts.JsonSerializerOptions.Converters.Add(enumConverter);
+                });
 
             services.AddSwaggerGen(c =>
             {

@@ -55,100 +55,53 @@ namespace AirportSystem.Persistence
                 new Airport { Name = "Leonardo da Vinci International Airport", CityId = cities[4].Id },
             };
 
-            Enumerable.Range(0, 1000).ToList().ForEach(n => airports.Add(new Airport
+            Enumerable.Range(0, 100).ToList().ForEach(n => airports.Add(new Airport
             {
-                Name = new string(alphabet.OrderBy(c => random.Next(0, 26)).ToArray()),
+                Name = new string(alphabet.OrderBy(c => random.Next(0, 26)).Take(10).ToArray()),
                 CityId = cities[random.Next(0, 5)].Id,
-                Latitude = random.NextDouble() * 1_000_000,
-                Longitude = random.NextDouble() * 1_000_000,
+                Latitude = Math.Round(random.NextDouble() * 180 - 90, 4),
+                Longitude = Math.Round(random.NextDouble() * 360 - 180, 4),
             }));
 
             context.Airports.AddRange(airports);
             await context.SaveChangesAsync();
 
-            var flights = new List<Flight>
+            var flights = new List<Flight>();
+
+            foreach (var airport in airports)
             {
-                new Flight
+                Enumerable.Range(0, 5).ToList().ForEach(n => flights.Add(new Flight
                 {
-                    ArrivalAirportId = airports[0].Id,
-                    DepartureAirportId = airports[1].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.NotStarted
-                },
-                new Flight
+                    Status = FlightStatus.NotStarted,
+                    Duration = TimeSpan.FromHours(random.Next(6, 25)),
+                    StartTime = new DateTime(
+                        2021,
+                        random.Next(8, 12),
+                        random.Next(1, 31),
+                        random.Next(1, 24),
+                        0,
+                        0
+                    ),
+                    ArrivalAirportId = airport.Id,
+                    DepartureAirportId = airports[random.Next(0, 101)].Id
+                }));
+
+                Enumerable.Range(0, 5).ToList().ForEach(n => flights.Add(new Flight
                 {
-                    ArrivalAirportId = airports[2].Id,
-                    DepartureAirportId = airports[3].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.InProcess
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[3].Id,
-                    DepartureAirportId = airports[2].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.Finished
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[0].Id,
-                    DepartureAirportId = airports[4].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.InProcess
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[4].Id,
-                    DepartureAirportId = airports[0].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.NotStarted
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[3].Id,
-                    DepartureAirportId = airports[0].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.InProcess
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[1].Id,
-                    DepartureAirportId = airports[2].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.NotStarted
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[2].Id,
-                    DepartureAirportId = airports[1].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.InProcess
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[2].Id,
-                    DepartureAirportId = airports[4].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.Finished
-                },
-                new Flight
-                {
-                    ArrivalAirportId = airports[4].Id,
-                    DepartureAirportId = airports[3].Id,
-                    Duration = TimeSpan.FromHours(10),
-                    StartTime = DateTime.UtcNow,
-                    Status = FlightStatus.NotStarted
-                },
-            };
+                    Status = FlightStatus.NotStarted,
+                    Duration = TimeSpan.FromHours(random.Next(6, 25)),
+                    StartTime = new DateTime(
+                        2021,
+                        random.Next(8, 12),
+                        random.Next(1, 31),
+                        random.Next(1, 24),
+                        0,
+                        0
+                    ),
+                    ArrivalAirportId = airports[random.Next(0, 101)].Id,
+                    DepartureAirportId = airport.Id
+                }));
+            }
 
             context.Flights.AddRange(flights);
             await context.SaveChangesAsync();
