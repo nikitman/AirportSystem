@@ -4,8 +4,10 @@ import React from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { airportsStore } from "../../stores/airportsStore";
 import { flightsStore } from "../../stores/flightsStore";
-import { FlightsList } from "./FlightsList";
-import { LeafletMap } from "./map/LeafletMap";
+import { MapControl } from "../map/MapControl";
+import { FlightsTable } from "./FlightsTable";
+import { AirportLayer } from "./mapLayers/AirportLayer";
+import { FlightsLayer } from "./mapLayers/FlightsLayer";
 
 type Props = RouteComponentProps<{ id?: string | undefined }>;
 type State = { flightSelected: boolean };
@@ -26,13 +28,13 @@ export const AirportDetails = withRouter(observer(
 
         componentWillUnmount() {
             airportsStore.clearSelectedAirport();
-            flightsStore.clearSelectedFlight();
+            flightsStore.clearSelectedFlights();
         }
 
         render() {
             const airport = airportsStore.selectedAirport;
 
-            if (airportsStore.isLoading || flightsStore.isLoading || !airport || !flightsStore.flights) {
+            if (airportsStore.isLoading || flightsStore.isLoading || !airport) {
                 return (
                     <Box m={2}>
                         <Typography variant="h3" component="p" align="center" gutterBottom>
@@ -62,16 +64,21 @@ export const AirportDetails = withRouter(observer(
                                     </CardContent>
                                 </Card>
                             </Grid>
-                            <Grid item xs={6}>
-                                <FlightsList flights={inboundFlights} title="Inbound Flights" />
+                            <Grid item xs={12}>
+                                <FlightsTable direction="inbound" flights={inboundFlights} />
                             </Grid>
-                            <Grid item xs={6}>
-                                <FlightsList flights={outboundFlights} title="Outbound Flights" />
+                            <Grid item xs={12}>
+                                <FlightsTable direction="outbound" flights={outboundFlights} />
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={6}>
-                        <LeafletMap />
+                        <MapControl>
+                            <AirportLayer airport={airport} />
+                            {flightsStore.selectedFlights.length > 0 && (
+                                <FlightsLayer airport={airport} flights={flightsStore.selectedFlights} />
+                            )}
+                        </MapControl>
                     </Grid>
                 </Grid >
             );

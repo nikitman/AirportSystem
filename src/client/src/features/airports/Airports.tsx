@@ -12,7 +12,7 @@ export class Airports extends React.Component {
     }
 
     render() {
-        if (airportsStore.airports === null || airportsStore.isLoading) {
+        if (airportsStore.isLoading) {
             return (
                 <Box m={2}>
                     <Typography variant="h3" component="p" align="center" gutterBottom>

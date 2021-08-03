@@ -11,4 +11,6 @@ export interface Flight {
     departureAirportName: string;
     departureAirportLatitude: number;
     departureAirportLongitude: number;
+    selected?: boolean;
+    color?: string;
 }

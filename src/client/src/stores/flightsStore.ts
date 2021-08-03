@@ -1,13 +1,10 @@
-import { makeObservable, observable, action, runInAction } from "mobx";
+import { makeObservable, observable, action, runInAction, computed } from "mobx";
 import { agent } from "../api/agent";
 import { Flight } from "../models/Flight";
 
 class FlightsStore {
     @observable
-    flights: Flight[] | null = null;
-
-    @observable
-    selectedFlight: Flight | null = null;
+    flights: Flight[] = [];
 
     @observable
     isLoading = false;
@@ -16,23 +13,33 @@ class FlightsStore {
         makeObservable(this);
     }
 
+    @computed
+    get selectedFlights() {
+        return this.flights?.filter(x => x.selected);
+    }
+
     @action
     setLoading = (isLoading: boolean) => {
         this.isLoading = isLoading;
     }
 
     @action
-    setSelectedFlight = (id: number) => {
-        let selectedFlight = this.flights?.find(x => x.id === id);
+    setFlightColor = (id: number, color: string) => {
+        this.flights.find(x => x.id === id)!.color = color;
+    }
 
-        if (selectedFlight) {
-            this.selectedFlight = selectedFlight;
+    @action
+    toggleFlight = (id: number) => {
+        const flight = this.flights.find(x => x.id === id);
+
+        if (flight) {
+            flight.selected = !flight.selected;
         }
     }
 
     @action
-    clearSelectedFlight = () => {
-        this.selectedFlight = null;
+    clearSelectedFlights = () => {
+        this.flights.forEach(x => x.selected = false);
     }
 
     @action

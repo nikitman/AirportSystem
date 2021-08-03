@@ -5,7 +5,7 @@ import { ListQueryParams } from "../models/ListQueryParams";
 
 class AirportsStore {
     @observable
-    airports: Airport[] | null = null;
+    airports: Airport[] = [];
 
     @observable
     selectedAirport: Airport | null = null;
@@ -47,7 +47,7 @@ class AirportsStore {
 
     @action
     setSelectedAirport = async (id: number) => {
-        let selectedAirport = this.airports?.find(x => x.id === id);
+        let selectedAirport = this.airports.find(x => x.id === id);
 
         this.selectedAirport = selectedAirport
             ? selectedAirport
