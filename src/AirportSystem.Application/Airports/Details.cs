@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using AirportSystem.Domain.Enums;
 using AirportSystem.Persistence;
 
 using MediatR;
@@ -38,12 +37,14 @@ namespace AirportSystem.Application.Airports
                     {
                         Id = x.Id,
                         Name = x.Name,
+                        IATA = x.IATA,
+                        ICAO = x.ICAO,
                         City = x.City.Name,
                         Country = x.City.Country.Name,
                         Latitude = x.Latitude,
                         Longitude = x.Longitude,
-                        InboundFlightsCount = x.InboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
-                        OutboundFlightsCount = x.OutboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
+                        InboundRoutesCount = x.InboundRoutes.Count,
+                        OutboundRoutesCount = x.OutboundRoutes.Count,
                     })
                     .SingleOrDefaultAsync();
             }

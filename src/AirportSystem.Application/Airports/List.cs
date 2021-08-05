@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AirportSystem.Application.Core;
-using AirportSystem.Domain.Enums;
 using AirportSystem.Persistence;
 
 using MediatR;
@@ -23,12 +22,14 @@ namespace AirportSystem.Application.Airports
             {
                 ["id"] = a => a.Id,
                 ["name"] = a => a.Name,
+                ["iata"] = a => a.IATA,
+                ["icao"] = a => a.ICAO,
                 ["city"] = a => a.City,
                 ["country"] = a => a.Country,
                 ["latitude"] = a => a.Latitude,
                 ["longitude"] = a => a.Longitude,
-                ["inboundflights"] = a => a.InboundFlightsCount,
-                ["outboundflights"] = a => a.OutboundFlightsCount,
+                ["inboundroutes"] = a => a.InboundRoutesCount,
+                ["outboundroutes"] = a => a.OutboundRoutesCount,
             };
 
             public PagingParams Paging { get; init; } = new();
@@ -72,13 +73,15 @@ namespace AirportSystem.Application.Airports
                     .Select(x => new AirportDto
                     {
                         Id = x.Id,
+                        IATA = x.IATA,
+                        ICAO = x.ICAO,
                         Name = x.Name,
                         City = x.City.Name,
                         Country = x.City.Country.Name,
                         Latitude = x.Latitude,
                         Longitude = x.Longitude,
-                        InboundFlightsCount = x.InboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
-                        OutboundFlightsCount = x.OutboundFlights.Where(y => y.Status == FlightStatus.NotStarted).Count(),
+                        InboundRoutesCount = x.InboundRoutes.Count,
+                        OutboundRoutesCount = x.OutboundRoutes.Count,
                     });
 
                 var sortByExpression = request.GetSortByExpression(request.Sorting.SortBy);

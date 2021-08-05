@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AirportSystem.Persistence.Migrations
 {
@@ -48,9 +46,11 @@ namespace AirportSystem.Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
-                    CityId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Latitude = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Longitude = table.Column<decimal>(type: "TEXT", nullable: false)
+                    IATA = table.Column<string>(type: "TEXT", nullable: true),
+                    ICAO = table.Column<string>(type: "TEXT", nullable: true),
+                    Latitude = table.Column<double>(type: "REAL", nullable: false),
+                    Longitude = table.Column<double>(type: "REAL", nullable: false),
+                    CityId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,29 +64,26 @@ namespace AirportSystem.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Flight",
+                name: "Route",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DepartureAirportId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ArrivalAirportId = table.Column<int>(type: "INTEGER", nullable: false)
+                    OriginId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DestinationId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flight", x => x.Id);
+                    table.PrimaryKey("PK_Route", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Flight_Airport_ArrivalAirportId",
-                        column: x => x.ArrivalAirportId,
+                        name: "FK_Route_Airport_DestinationId",
+                        column: x => x.DestinationId,
                         principalTable: "Airport",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Flight_Airport_DepartureAirportId",
-                        column: x => x.DepartureAirportId,
+                        name: "FK_Route_Airport_OriginId",
+                        column: x => x.OriginId,
                         principalTable: "Airport",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -103,20 +100,20 @@ namespace AirportSystem.Persistence.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flight_ArrivalAirportId",
-                table: "Flight",
-                column: "ArrivalAirportId");
+                name: "IX_Route_DestinationId",
+                table: "Route",
+                column: "DestinationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flight_DepartureAirportId",
-                table: "Flight",
-                column: "DepartureAirportId");
+                name: "IX_Route_OriginId",
+                table: "Route",
+                column: "OriginId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Flight");
+                name: "Route");
 
             migrationBuilder.DropTable(
                 name: "Airport");

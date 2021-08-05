@@ -8,16 +8,20 @@ namespace AirportSystem.Domain.Entities
 
         public string Name { get; set; }
 
-        public int CityId { get; set; }
+        public string IATA { get; set; }
+
+        public string ICAO { get; set; }
 
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
 
+        public int CityId { get; set; }
+
         public City City { get; set; }
 
-        public ICollection<Flight> InboundFlights { get; set; } = new List<Flight>();
+        public ICollection<Route> InboundRoutes { get; set; } = new List<Route>();
 
-        public ICollection<Flight> OutboundFlights { get; set; } = new List<Flight>();
+        public ICollection<Route> OutboundRoutes { get; set; } = new List<Route>();
     }
 }

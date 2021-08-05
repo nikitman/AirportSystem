@@ -14,7 +14,7 @@ namespace AirportSystem.Persistence
 
         public DbSet<Airport> Airports { get; set; }
 
-        public DbSet<Flight> Flights { get; set; }
+        public DbSet<Route> Routes { get; set; }
 
         public DbSet<City> Cities { get; set; }
 
@@ -23,7 +23,7 @@ namespace AirportSystem.Persistence
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.LogTo(Console.WriteLine);
+            //optionsBuilder.LogTo(Console.WriteLine);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,19 +31,21 @@ namespace AirportSystem.Persistence
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Airport>().ToTable("Airport");
-            modelBuilder.Entity<Flight>().ToTable("Flight");
+            modelBuilder.Entity<Route>().ToTable("Route");
             modelBuilder.Entity<City>().ToTable("City");
             modelBuilder.Entity<Country>().ToTable("Country");
 
-            modelBuilder.Entity<Airport>()
-                .HasMany(x => x.InboundFlights)
-                .WithOne(x => x.ArrivalAirport)
-                .HasForeignKey(x => x.ArrivalAirportId);
+            modelBuilder.Entity<Airport>().Property(x => x.Id).ValueGeneratedNever();
 
             modelBuilder.Entity<Airport>()
-                .HasMany(x => x.OutboundFlights)
-                .WithOne(x => x.DepartureAirport)
-                .HasForeignKey(x => x.DepartureAirportId);
+                .HasMany(x => x.InboundRoutes)
+                .WithOne(x => x.Destination)
+                .HasForeignKey(x => x.DestinationId);
+
+            modelBuilder.Entity<Airport>()
+                .HasMany(x => x.OutboundRoutes)
+                .WithOne(x => x.Origin)
+                .HasForeignKey(x => x.OriginId);
         }
     }
 }
